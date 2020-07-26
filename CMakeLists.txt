@@ -79,6 +79,8 @@ set(SRC_SHARED
     shared/cpercep.cpp
     shared/dither.cpp
     shared/exportfile.cpp
+    shared/gbfsutils.cpp
+    shared/gbfs.cpp
     shared/fileutils.cpp
     shared/headerfile.cpp
     shared/image.cpp

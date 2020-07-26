@@ -19,6 +19,7 @@
 #include "headerfile.hpp"
 #include "export_params.hpp"
 #include "fileutils.hpp"
+#include "gbfs.hpp"
 #include "implementationfile.hpp"
 #include "logger.hpp"
 #include "lutgen.hpp"
@@ -129,6 +130,10 @@ static const wxCmdLineEntryDesc cmd_descriptions[] =
     // Other
     {wxCMD_LINE_SWITCH, "", "export_images",     ""},
     {wxCMD_LINE_SWITCH, "", "no_export_images",  ""},
+
+    // GBFS
+    {wxCMD_LINE_SWITCH, "", "export_gbfs",     ""},
+    {wxCMD_LINE_SWITCH, "", "no_export_gbfs",  ""},
 
     // Devkitpro
     {wxCMD_LINE_SWITCH, "", "for_devkitpro",     ""},
@@ -252,6 +257,8 @@ const std::map<std::string, HelpDesc> help_text = {
                                      "\tThis means in a mode 4 export you will get a palette image showing the palette.\n"
                                      "\tIn a mode 0 export you will get a tileset image, a palette image, and a map image.\n"
                                      "\tIn sprites export you will get a palette image, and a sprite image.")},
+{"export_gbfs", HelpDesc("", "In addition to generating a .c.h pair\n"
+                                     "\talso export a GBFS archive.\n")},
 {"force", HelpDesc("", "NOT IMPLEMENTED")},
 {"split_sbb", HelpDesc("number [0-3]", "NOT IMPLEMENTED")},
 };
@@ -500,6 +507,7 @@ bool Nin10KitApp::OnCmdLineParsed(wxCmdLineParser& parser)
     params.dither_level = parse.GetInt("dither_level", 10, 0, 100) / 100.0f;
 
     params.export_images = parse.GetSwitch("export_images");
+    params.export_gbfs = parse.GetSwitch("export_gbfs");
 
     params.offset = parse.GetInt("start", 0, 0, 255);
     params.palette_size = parse.GetInt("palette", 256, 1, 256);
@@ -738,6 +746,16 @@ bool Nin10KitApp::DoExportImages()
     file_h.close();
     file_c.close();
 
+    // Write GBFS archive if requested
+    if (params.export_gbfs) {
+        std::ofstream file_gbfs;
+        InitGBFSFile(file_gbfs, params.filename);
+        // TODO: Open from disk if archive already exists
+        auto gbfs = GBFS();
+        gbfs.WriteGraphics();
+        gbfs.WriteArchive(file_gbfs);
+        file_gbfs.close();
+    }
     return true;
 }
 

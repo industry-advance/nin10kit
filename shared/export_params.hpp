@@ -64,6 +64,8 @@ struct ExportParams
 
     // Devkitpro stuff
     bool for_devkitpro;
+    // GBFS stuff
+    bool export_gbfs;
 };
 
 extern ExportParams params;

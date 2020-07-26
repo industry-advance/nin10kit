@@ -9,6 +9,7 @@
 
 #include "lutgen.hpp"
 #include "image.hpp"
+#include "gbfs.hpp"
 
 /** Base class for a file created by this program.*/
 class ExportFile
@@ -27,6 +28,8 @@ class ExportFile
         static void AddLutInfo(const LutSpecification& spec);
         static void Add(std::unique_ptr<Exportable> image);
 
+        static std::map<std::string, std::vector<Image*>> GetAnimatedImages();
+
         static void Clear();
 
         virtual void Write(std::ostream& file);
@@ -42,8 +45,6 @@ class ExportFile
         static inline int transparent_color = -1;
         static inline std::string mode = "3";
         static inline std::vector<std::unique_ptr<Exportable>> exportables;
-
-        static std::map<std::string, std::vector<Image*>> GetAnimatedImages();
 };
 
 #endif
